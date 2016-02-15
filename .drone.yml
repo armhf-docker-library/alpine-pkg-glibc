@@ -6,8 +6,8 @@ build:
   a_preparing:
     image: armhfbuild/buildpack-deps:jessie-scm
     commands:
-      - rm upstream -fR && git clone --single-branch https://github.com/andyshinn/alpine-pkg-glibc upstream
-      - rm packages -fR && mkdir packages
+      - git clone --single-branch https://github.com/andyshinn/alpine-pkg-glibc upstream
+      - mkdir packages
       - chown -R 1000 upstream packages
       - cd upstream
       - sed -i 's/arch=.*/arch="armhf"/g' APKBUILD
@@ -22,18 +22,14 @@ build:
       - RSA_PRIVATE_KEY=ABCDEF
     commands:
       - ln -s $PWD/upstream /home/builder/package
-      - ln -s $PWD/packages /home/builder/packages
       - cd /home/builder/package
       - abuilder -r
+      - cp /home/builder/packages/alpine-pkg-glibc/armhf/* /drone/src/github.com/armhf-docker-library/alpine-pkg-glibc/packages/
 
 publish:
   github_release:
     api_key: $$GITHUB_API_KEY
-    files:
-      - packages/src/armhf/glibc-$$VERSION-armhf.tar.gz
-      - packages/src/armhf/glibc-bin-$$VERSION-armhf.tar.gz
-      - packages/src/armhf/glibc-i18n-$$VERSION-armhf.tar.gz
-      - packages/src/armhf/APKINDEX.tar.gz
+    files: packages/*
     checksum: sha1
 
 notify:
