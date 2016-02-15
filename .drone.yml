@@ -3,7 +3,7 @@ matrix:
     - "2.22"
 
 build:
-  preparing:
+  a_preparing:
     image: armhfbuild/buildpack-deps:jessie-scm
     commands:
       - rm upstream -fR && git clone --single-branch https://github.com/andyshinn/alpine-pkg-glibc upstream
@@ -16,7 +16,7 @@ build:
       - sed -i 's/^source=.*/source="https:\/\/github.com\/armhf-docker-library\/glibc\/releases\/download\/2.22\/glibc-bin.tar.gz/' APKBUILD
       - export MD5=2a9d468836dd45918d679ee53ae23542
       - sed -i "s/md5sums=\".*/md5sums=\"${MD5} glibc-bin.tar.gz/" APKBUILD
-  building:
+  b_building:
     image: armhfbuild/alpine-abuild
     environment:
       - RSA_PRIVATE_KEY=ABCDEF
